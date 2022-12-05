@@ -85,7 +85,9 @@ class _MapScreenState extends State<MapScreen> {
                   ? element.get('longitude').toDouble()
                   : element.get('longitude'),
               element.get('criticality'),
-              element.get('date'));
+              element.get('date'),
+              element.id
+          );
           _markers.add(Marker(
             markerId: MarkerId(location.description),
             position: LatLng(location.latitude, location.longitude),
