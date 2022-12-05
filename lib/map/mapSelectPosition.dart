@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:degue_locator/dbo/firebase_connection.dart';
 import 'package:degue_locator/registration/cadastro_page.dart';
 import 'package:degue_locator/map/mapScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -216,7 +217,8 @@ class _MapScreenState extends State<MapScreen2> {
           image: widget.image,
           date: widget.date,
           longitude: longitudeAtual,
-          latitude: latitudeAtual);
+          latitude: latitudeAtual,
+          email: FirebaseAuth.instance.currentUser?.email);
 
       if (response.cod != 200) {
         showDialog(
