@@ -18,6 +18,7 @@ class _EditPageState extends State<EditPage> {
   var date = DateTime.now();
   var longitude = 0.0;
   var latitude = 0.0;
+  var id = null;
 
   bool _firstButton = true;
   bool _secondButton = false;
@@ -32,6 +33,7 @@ class _EditPageState extends State<EditPage> {
     criticality = widget.locationModel.criticality;
     longitude = widget.locationModel.longitude;
     latitude = widget.locationModel.latitude;
+    id = widget.locationModel.uid;
     if (criticality == 0) {
       _alternaFirstButton();
     } else if (criticality == 1) {
@@ -216,7 +218,7 @@ class _EditPageState extends State<EditPage> {
               ),
               child: const Text('Confirmar'),
               onPressed: () {
-                //updateDengueLocalization(widget.locationModel.id);
+                updateDengueLocalization(widget.locationModel.uid);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => MapScreen()),
@@ -230,7 +232,7 @@ class _EditPageState extends State<EditPage> {
     );
   }
 
-  updateDengueLocalization(String id) async {
+  updateDengueLocalization(String? id) async {
     try {
       var response = await FirebaseCrud.updateLocalization(
           uid: id,
