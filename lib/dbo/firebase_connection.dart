@@ -1,5 +1,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:degue_locator/map/mapScreen.dart';
 
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -20,6 +21,7 @@ class FirebaseCrud{
     required DateTime date,
     required double longitude,
     required double latitude,
+    required String? email,
   }) async{
     Response response = Response();
     DocumentReference documentReferencer = _Collection.doc();
@@ -30,7 +32,8 @@ class FirebaseCrud{
       "image": image,
       "date": date,
       "longitude": longitude,
-      "latitude": latitude
+      "latitude": latitude,
+      "email": email,
     };
 
     var result = await documentReferencer.set(data).whenComplete((){
@@ -44,7 +47,7 @@ class FirebaseCrud{
   }
 
   static Future<Response> updateLocalization({
-    required String uid,
+    required String? uid,
     required String description,
     required int criticality,
     required String image,
@@ -61,12 +64,12 @@ class FirebaseCrud{
       "image": image,
       "date": date,
       "longitude": longitude,
-      "latitude": latitude
+      "latitude": latitude,
     };
 
     await documentReferencer.update(data).whenComplete((){
       response.cod = 200;
-      response.msg = "Update realizado";
+      response.msg = "Edição realizada com sucesso";
     }).catchError((e){
       response.cod = 500;
       response.msg = e;
@@ -82,7 +85,7 @@ class FirebaseCrud{
   }
 
   static Future<Response> deleteLocalization({
-    required String uid,
+    required String? uid,
   }) async{
     Response response = Response();
     DocumentReference documentReferencer = _Collection.doc(uid);
