@@ -1,5 +1,5 @@
 // ignore_for_file: prefer_final_fields
-import 'package:degue_locator/map/mapScreen2.dart';
+import 'package:degue_locator/map/mapSelectPosition.dart';
 import 'package:flutter/material.dart';
 
 class CadastroPage extends StatefulWidget {
