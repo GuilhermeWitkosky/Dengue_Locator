@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "766965573463",
+    "project_id": "dengue-locator-1-58d80",
+    "storage_bucket": "dengue-locator-1-58d80.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:766965573463:android:f2f04d3d27ce3b7e808012",
+        "android_client_info": {
+          "package_name": "com.example.degue_locator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "766965573463-334olgsk1qc503bla216uf64g4t7do2c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdRjqfBHbTsdinC58y2PLyjntNIYyXux4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "766965573463-334olgsk1qc503bla216uf64g4t7do2c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
