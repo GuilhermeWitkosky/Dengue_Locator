@@ -6,7 +6,9 @@ class LocationModel {
   final double longitude;
   final int criticality;
   final Timestamp date;
+  final String? uid;
+
 
   LocationModel(this.description, this.latitude, this.longitude,
-      this.criticality, this.date);
+      this.criticality, this.date, this.uid);
 }
