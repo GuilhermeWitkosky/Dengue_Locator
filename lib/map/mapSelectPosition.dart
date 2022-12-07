@@ -112,8 +112,6 @@ class _MapScreenState extends State<MapScreen2> {
                 longitudeAtual = cameraPositiona.target.longitude;
               },
               onCameraIdle: () async {
-
-
                 String url =
                     "https://maps.googleapis.com/maps/api/geocode/xml?latlng=" +
                         latitudeAtual.toString() +
@@ -167,10 +165,7 @@ class _MapScreenState extends State<MapScreen2> {
                   child: FloatingActionButton(
                     backgroundColor: const Color.fromRGBO(255, 63, 84, 1),
                     foregroundColor: Colors.white,
-                    onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CadastroPage())),
+                    onPressed: () => Navigator.pop(context),
                     child: const Icon(Icons.arrow_back),
                   )),
               const Padding(padding: EdgeInsets.all(300 - 43)),

@@ -2,6 +2,7 @@ import 'package:degue_locator/dbo/firebase_connection.dart';
 import 'package:degue_locator/editInformation/edit_page.dart';
 import 'package:degue_locator/model/location.dart';
 import 'package:degue_locator/registration/cadastro_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -32,13 +33,21 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     // TODO: implement initState
     //markersList = FirebaseCrud.readLocalizations();
-    addCustomIcon();
+    //addCustomIcon();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+            },
+          ),
+        ),
         body: GoogleMap(
           myLocationButtonEnabled: false,
           myLocationEnabled: true,
@@ -71,7 +80,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   getMarkers() {
-    addCustomIcon();
+    //addCustomIcon();
     try {
       FirebaseCrud.readLocalizations().listen((event) {
         print(event.docs[0].data());
@@ -86,8 +95,7 @@ class _MapScreenState extends State<MapScreen> {
                   : element.get('longitude'),
               element.get('criticality'),
               element.get('date'),
-              element.id
-          );
+              element.id);
           _markers.add(Marker(
             markerId: MarkerId(location.description),
             position: LatLng(location.latitude, location.longitude),
@@ -104,7 +112,8 @@ class _MapScreenState extends State<MapScreen> {
                                 locationModel: location!,
                               )));
                 }),
-            icon: markerIcon,
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueRed), //markerIcon,
           ));
         });
       });
@@ -117,7 +126,7 @@ class _MapScreenState extends State<MapScreen> {
   addCustomIcon() {
     String iconPath = 'images/icon_high.png';
     BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(size: Size(50, 50)), iconPath)
+            const ImageConfiguration(size: Size(1, 1)), iconPath)
         .then((icon) {
       setState(() {
         if (icon != null) {

@@ -44,21 +44,21 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-      apiKey: "AIzaSyAPvyrcnms8AZa__ezFvZmuiFHl2MFmT0k",
-      authDomain: "crud-flutter-1-f63e5.firebaseapp.com",
-      projectId: "crud-flutter-1-f63e5",
-      storageBucket: "crud-flutter-1-f63e5.appspot.com",
-      messagingSenderId: "999969842669",
-      appId: "1:999969842669:web:673dbbaf75fc899c2d33e4",
-      measurementId: "G-75YEMBJL3M",
+    apiKey: "AIzaSyAPvyrcnms8AZa__ezFvZmuiFHl2MFmT0k",
+    authDomain: "crud-flutter-1-f63e5.firebaseapp.com",
+    projectId: "crud-flutter-1-f63e5",
+    storageBucket: "crud-flutter-1-f63e5.appspot.com",
+    messagingSenderId: "999969842669",
+    appId: "1:999969842669:web:673dbbaf75fc899c2d33e4",
+    measurementId: "G-75YEMBJL3M",
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD8pRphRq-W_5_ZQ8HgnjOq_ai9qhTGlHc',
-    appId: '1:886691144291:android:053d130d46317829bc8e56',
-    messagingSenderId: '886691144291',
-    projectId: 'dengue-locator-1',
-    storageBucket: 'dengue-locator-1.appspot.com',
+    apiKey: 'AIzaSyD7ry5xa5PncLNqBp292emYplPAP1XySrQ',
+    appId: '1:999969842669:android:3f718e1e0b0ad6862d33e4',
+    messagingSenderId: '999969842669',
+    projectId: 'crud-flutter-1-f63e5',
+    storageBucket: 'crud-flutter-1-f63e5.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
