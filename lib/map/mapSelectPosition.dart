@@ -23,11 +23,13 @@ class MapScreen2 extends StatefulWidget {
       {required this.description,
       required this.criticality,
       required this.image,
-      required this.date});
+      required this.date,
+      required this.status});
   final String description;
   final int criticality;
   final String image;
   final DateTime date;
+  final String status;
   @override
   _MapScreenState createState() => _MapScreenState();
 }
@@ -213,7 +215,8 @@ class _MapScreenState extends State<MapScreen2> {
           date: widget.date,
           longitude: longitudeAtual,
           latitude: latitudeAtual,
-          email: FirebaseAuth.instance.currentUser?.email);
+          email: FirebaseAuth.instance.currentUser?.email,
+          status: widget.status);
 
       if (response.cod != 200) {
         showDialog(

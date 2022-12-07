@@ -22,6 +22,7 @@ class FirebaseCrud{
     required double longitude,
     required double latitude,
     required String? email,
+    required String? status,
   }) async{
     Response response = Response();
     DocumentReference documentReferencer = _Collection.doc();
