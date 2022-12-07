@@ -35,6 +35,7 @@ class FirebaseCrud{
       "longitude": longitude,
       "latitude": latitude,
       "email": email,
+      "status": status,
     };
 
     var result = await documentReferencer.set(data).whenComplete((){
@@ -55,6 +56,7 @@ class FirebaseCrud{
     required DateTime date,
     required double longitude,
     required double latitude,
+    required String status,
   }) async{
     Response response = Response();
     DocumentReference documentReferencer = _Collection.doc(uid);
@@ -66,6 +68,7 @@ class FirebaseCrud{
       "date": date,
       "longitude": longitude,
       "latitude": latitude,
+      "status": status,
     };
 
     await documentReferencer.update(data).whenComplete((){
