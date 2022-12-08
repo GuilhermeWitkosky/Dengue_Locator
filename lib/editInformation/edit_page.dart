@@ -1,6 +1,7 @@
 import 'package:degue_locator/dbo/firebase_connection.dart';
 import 'package:degue_locator/map/mapScreen.dart';
 import 'package:degue_locator/model/location.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 class EditPage extends StatefulWidget {
@@ -24,8 +25,13 @@ class _EditPageState extends State<EditPage> {
   bool _secondButton = false;
   bool _thirdButton = false;
 
+  String url =
+      'https://rafaturis.com.br/wp-content/uploads/2014/01/default-placeholder.png';
+
   @override
   void initState() {
+    final ref =
+        FirebaseStorage.instance.ref().child(widget.locationModel.image);
     // TODO: implement initState
     descriptionController =
         TextEditingController(text: widget.locationModel.description);
@@ -41,7 +47,16 @@ class _EditPageState extends State<EditPage> {
     } else {
       _alternaThirdButton();
     }
+    loadUrl();
     super.initState();
+  }
+
+  void loadUrl() async {
+    final ref =
+        FirebaseStorage.instance.ref().child(widget.locationModel.image);
+    await ref.getDownloadURL().then((value) => setState(() {
+          url = value;
+        }));
   }
 
   @override
@@ -207,6 +222,15 @@ class _EditPageState extends State<EditPage> {
                 ),
               ),
             ),
+            Container(
+                width: 100.00,
+                height: 100.00,
+                decoration: new BoxDecoration(
+                  image: new DecorationImage(
+                    image: NetworkImage(url),
+                    fit: BoxFit.fitHeight,
+                  ),
+                )),
             const Padding(padding: EdgeInsets.all(8)),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -241,7 +265,8 @@ class _EditPageState extends State<EditPage> {
           image: image,
           date: date,
           longitude: longitude,
-          latitude: latitude);
+          latitude: latitude,
+          status: 'closed');
 
       if (response.cod != 200) {
         showDialog(

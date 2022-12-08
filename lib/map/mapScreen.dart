@@ -1,7 +1,9 @@
 import 'package:degue_locator/dbo/firebase_connection.dart';
 import 'package:degue_locator/editInformation/edit_page.dart';
+import 'package:degue_locator/login/login_page.dart';
 import 'package:degue_locator/model/location.dart';
 import 'package:degue_locator/registration/cadastro_page.dart';
+import 'package:degue_locator/widget/widget_tree.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -25,7 +27,7 @@ class _MapScreenState extends State<MapScreen> {
     super.dispose();
   }
 
-  final Set<Marker> _markers = {};
+  Set<Marker> _markers = {};
   BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
   List<String> priority = ['Baixa', 'Média', 'Alta'];
 
@@ -33,8 +35,28 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     // TODO: implement initState
     //markersList = FirebaseCrud.readLocalizations();
-    //addCustomIcon();
+    //print(locationAux.length);
+    //getMarkers();
+    addCustomIcon();
     super.initState();
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    setState(() {
+      _googleMapController = controller;
+      getMarkers();
+    });
+  }
+
+  void logout() async {
+    await FirebaseAuth.instance.signOut().then(
+          (user) => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => WidgetTree(),
+            ),
+          ),
+        );
   }
 
   @override
@@ -44,7 +66,7 @@ class _MapScreenState extends State<MapScreen> {
           leading: IconButton(
             icon: Icon(Icons.logout),
             onPressed: () {
-              FirebaseAuth.instance.signOut();
+              logout();
             },
           ),
         ),
@@ -52,8 +74,8 @@ class _MapScreenState extends State<MapScreen> {
           myLocationButtonEnabled: false,
           myLocationEnabled: true,
           initialCameraPosition: _initialCameraPosition,
-          onMapCreated: (controller) => _googleMapController = controller,
-          markers: getMarkers(),
+          onMapCreated: _onMapCreated,
+          markers: _markers,
         ),
         floatingActionButton: Container(
           child: Align(
@@ -81,46 +103,45 @@ class _MapScreenState extends State<MapScreen> {
 
   getMarkers() {
     //addCustomIcon();
-    try {
-      FirebaseCrud.readLocalizations().listen((event) {
-        print(event.docs[0].data());
-        event.docs.forEach((element) {
-          LocationModel location = LocationModel(
-              element.get('description'),
-              element.get('latitude').runtimeType == 'int'
-                  ? element.get('latitude').toDouble()
-                  : element.get('latitude'),
-              element.get('longitude').runtimeType == 'int'
-                  ? element.get('longitude').toDouble()
-                  : element.get('longitude'),
-              element.get('criticality'),
-              element.get('date'),
-              element.id);
-          _markers.add(Marker(
-            markerId: MarkerId(location.description),
-            position: LatLng(location.latitude, location.longitude),
-            infoWindow: InfoWindow(
-                title: DateFormat('dd/MM/yyyy').format(location.date.toDate()),
-                snippet: location.description +
-                    ' - ' +
-                    priority[location.criticality],
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => EditPage(
-                                locationModel: location!,
-                              )));
-                }),
-            icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueRed), //markerIcon,
-          ));
-        });
+    _markers.clear();
+    Set<Marker> _markerTemp = {};
+    FirebaseCrud.readLocalizations().listen((event) {
+      event.docs.forEach((element) {
+        LocationModel location = LocationModel(
+            element.get('description'),
+            element.get('latitude').runtimeType == 'int'
+                ? element.get('latitude').toDouble()
+                : element.get('latitude'),
+            element.get('longitude').runtimeType == 'int'
+                ? element.get('longitude').toDouble()
+                : element.get('longitude'),
+            element.get('criticality'),
+            element.get('date'),
+            element.id,
+            element.get('image'));
+        _markerTemp.add(Marker(
+          markerId: MarkerId(location.description),
+          position: LatLng(location.latitude, location.longitude),
+          infoWindow: InfoWindow(
+              title: DateFormat('dd/MM/yyyy').format(location.date.toDate()),
+              snippet:
+                  location.description + ' - ' + priority[location.criticality],
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditPage(
+                              locationModel: location!,
+                            )));
+              }),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+              BitmapDescriptor.hueRed), //markerIcon,
+        ));
       });
-      return _markers;
-    } catch (e) {
-      return _markers;
-    }
+      setState(() {
+        _markers = _markerTemp;
+      });
+    });
   }
 
   addCustomIcon() {

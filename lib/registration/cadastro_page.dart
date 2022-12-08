@@ -16,12 +16,12 @@ class CadastroPage extends StatefulWidget {
 }
 
 class _CadastroPageState extends State<CadastroPage> {
-  var descriptionController = TextEditingController();
-  var criticality = 0;
-  var image = '';
-  var date = DateTime.now();
-  var longitude = 0.0;
-  var latitude = 0.0;
+  TextEditingController descriptionController = TextEditingController();
+  int criticality = 0;
+  DateTime date = DateTime.now();
+  double longitude = 0.0;
+  double latitude = 0.0;
+  String image = '';
 
   bool _firstButton = true;
   bool _secondButton = false;
@@ -63,17 +63,16 @@ class _CadastroPageState extends State<CadastroPage> {
     if (_photo == null) return;
     final fileName = basename(_photo!.path);
     final destination = 'img/$fileName';
+    print('PATH => $destination');
+    setState(() {
+      image = destination + '/file';
+    });
 
     try {
       final ref = firebase_storage.FirebaseStorage.instance
           .ref(destination)
-          .child('file/');
+          .child('/file');
       await ref.putFile(_photo!);
-      ref.child('file/').getDownloadURL().then((value) {
-        setState(() {
-          image = value;
-        });
-      });
     } catch (e) {
       print('error occured');
     }
@@ -336,7 +335,8 @@ class _CadastroPageState extends State<CadastroPage> {
                           description: descriptionController.text,
                           image: image,
                           date: date,
-                          criticality: criticality)),
+                          criticality: criticality,
+                          status: 'open')),
                 );
               },
             ),
