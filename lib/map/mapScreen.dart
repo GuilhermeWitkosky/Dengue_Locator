@@ -5,9 +5,13 @@ import 'package:degue_locator/model/location.dart';
 import 'package:degue_locator/registration/cadastro_page.dart';
 import 'package:degue_locator/widget/widget_tree.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'dart:ui' as ui;
 
 class MapScreen extends StatefulWidget {
   @override
@@ -28,15 +32,14 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Set<Marker> _markers = {};
-  BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor markerIconHigh = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor markerIconMedium = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor markerIconLow = BitmapDescriptor.defaultMarker;
   List<String> priority = ['Baixa', 'Média', 'Alta'];
 
   @override
   void initState() {
     // TODO: implement initState
-    //markersList = FirebaseCrud.readLocalizations();
-    //print(locationAux.length);
-    //getMarkers();
     addCustomIcon();
     super.initState();
   }
@@ -63,12 +66,26 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () {
-              logout();
-            },
+          backgroundColor: const Color.fromRGBO(255, 63, 84, 1),
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          title: Text(
+            'Dengue Locator',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontFamily: GoogleFonts.kaushanScript().fontFamily,
+              fontWeight: FontWeight.bold,
+            ),
           ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.logout),
+              onPressed: () {
+                logout();
+              },
+            ),
+          ],
         ),
         body: GoogleMap(
           myLocationButtonEnabled: false,
@@ -101,8 +118,7 @@ class _MapScreenState extends State<MapScreen> {
         ));
   }
 
-  getMarkers() {
-    //addCustomIcon();
+  getMarkers() async {
     _markers.clear();
     Set<Marker> _markerTemp = {};
     FirebaseCrud.readLocalizations().listen((event) {
@@ -118,7 +134,9 @@ class _MapScreenState extends State<MapScreen> {
             element.get('criticality'),
             element.get('date'),
             element.id,
-            element.get('image'));
+            element.get('image'),
+            element.get('status'),
+            element.get('email'));
         _markerTemp.add(Marker(
           markerId: MarkerId(location.description),
           position: LatLng(location.latitude, location.longitude),
@@ -134,8 +152,7 @@ class _MapScreenState extends State<MapScreen> {
                               locationModel: location!,
                             )));
               }),
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-              BitmapDescriptor.hueRed), //markerIcon,
+          icon: selectCustomIcon(priority[element.get('criticality')]),
         ));
       });
       setState(() {
@@ -144,16 +161,41 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  addCustomIcon() {
-    String iconPath = 'images/icon_high.png';
-    BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(size: Size(1, 1)), iconPath)
-        .then((icon) {
-      setState(() {
-        if (icon != null) {
-          markerIcon = icon;
-        }
-      });
+  selectCustomIcon(String priority) {
+    switch (priority) {
+      case 'Baixa':
+        return markerIconLow;
+      case 'Média':
+        return markerIconMedium;
+      case 'Alta':
+        return markerIconHigh;
+      default:
+        return BitmapDescriptor.defaultMarker;
+    }
+  }
+
+  addCustomIcon() async {
+    String iconPathHigh = 'images/icon_high.png';
+    String iconPathMedium = 'images/icon_medium.png';
+    String iconPathLow = 'images/icon_low.png';
+    Uint8List markerIconBytesHigh = await getBytesFromAsset(iconPathHigh, 100);
+    Uint8List markerIconBytesMedium =
+        await getBytesFromAsset(iconPathMedium, 100);
+    Uint8List markerIconBytesLow = await getBytesFromAsset(iconPathLow, 100);
+    setState(() {
+      markerIconHigh = BitmapDescriptor.fromBytes(markerIconBytesHigh);
+      markerIconMedium = BitmapDescriptor.fromBytes(markerIconBytesMedium);
+      markerIconLow = BitmapDescriptor.fromBytes(markerIconBytesLow);
     });
+  }
+
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+        .buffer
+        .asUint8List();
   }
 }

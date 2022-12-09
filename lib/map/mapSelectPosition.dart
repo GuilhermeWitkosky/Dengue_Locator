@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 // import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
@@ -70,7 +71,6 @@ class _MapScreenState extends State<MapScreen2> {
       xml.parse(response.body);
       var body = xml.toParker();
       var bodyJson = jsonDecode(body);
-      print(bodyJson["GeocodeResponse"]["result"][0]["formatted_address"]);
 
       setState(() {
         //get place name from lat and lang
@@ -89,6 +89,20 @@ class _MapScreenState extends State<MapScreen2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color.fromRGBO(255, 63, 84, 1),
+          elevation: 0,
+          centerTitle: true,
+          title: Text(
+            'Confirmar localização',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontFamily: GoogleFonts.roboto().fontFamily,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
         body: Stack(
           children: [
             GoogleMap(
@@ -134,13 +148,13 @@ class _MapScreenState extends State<MapScreen2> {
             ),
             Positioned(
                 //widget to display location name
-                bottom: 100,
+                bottom: 0,
                 child: Padding(
                   padding: EdgeInsets.all(10),
                   child: Card(
                     child: Container(
                         padding: EdgeInsets.all(0),
-                        width: MediaQuery.of(context).size.width - 40,
+                        width: MediaQuery.of(context).size.width - 75,
                         child: ListTile(
                           leading: Icon(
                             Icons.my_location,
@@ -157,53 +171,24 @@ class _MapScreenState extends State<MapScreen2> {
                 ))
           ],
         ),
-        floatingActionButton: Container(
-          child: Container(
-              child: Column(
-            children: [
-              const Padding(padding: EdgeInsets.all(12)),
-              Align(
-                  alignment: const Alignment(-0.8, 0),
-                  child: FloatingActionButton(
-                    backgroundColor: const Color.fromRGBO(255, 63, 84, 1),
-                    foregroundColor: Colors.white,
-                    onPressed: () => Navigator.pop(context),
-                    child: const Icon(Icons.arrow_back),
-                  )),
-              const Padding(padding: EdgeInsets.all(300 - 43)),
-              Align(
-                  alignment: const Alignment(0, 1),
-                  child: Card(
-                      shadowColor: Colors.black26,
-                      child: Container(
-                        child: Column(
-                          children: [
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    const Color.fromRGBO(255, 63, 84, 1),
-                                foregroundColor: Colors.white,
-                                padding:
-                                    const EdgeInsets.fromLTRB(80, 15, 80, 15),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                ),
-                              ),
-                              child: const Text('Cadastrar'),
-                              onPressed: () => {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MapScreen())),
-                                addNewDengueLocalization()
-                              },
-                            )
-                          ],
-                        ),
-                      )))
-            ],
-          )),
-        ));
+        bottomNavigationBar: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(255, 63, 84, 1),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.fromLTRB(80, 15, 80, 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
+              ),
+              child: const Text('Cadastrar'),
+              onPressed: () => {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MapScreen())),
+                addNewDengueLocalization()
+              },
+            )));
   }
 
   addNewDengueLocalization() async {

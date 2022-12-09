@@ -63,7 +63,6 @@ class _CadastroPageState extends State<CadastroPage> {
     if (_photo == null) return;
     final fileName = basename(_photo!.path);
     final destination = 'img/$fileName';
-    print('PATH => $destination');
     setState(() {
       image = destination + '/file';
     });
@@ -202,7 +201,7 @@ class _CadastroPageState extends State<CadastroPage> {
                       _alternaFirstButton();
                     },
                   ),
-                  const Padding(padding: EdgeInsets.all(18)),
+                  const Padding(padding: EdgeInsets.all(22)),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _secondButton
@@ -228,7 +227,7 @@ class _CadastroPageState extends State<CadastroPage> {
                       _alternaSecondButton();
                     },
                   ),
-                  const Padding(padding: EdgeInsets.all(18)),
+                  const Padding(padding: EdgeInsets.all(22)),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _thirdButton
@@ -262,7 +261,7 @@ class _CadastroPageState extends State<CadastroPage> {
               height: 40,
               alignment: Alignment.centerLeft,
               child: const Text(
-                "Anexos:",
+                "Imagem:",
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -277,7 +276,7 @@ class _CadastroPageState extends State<CadastroPage> {
               },
               child: CircleAvatar(
                 radius: 55,
-                backgroundColor: const Color(0xffFDCF09),
+                backgroundColor: const Color.fromRGBO(255, 63, 84, 1),
                 child: _photo != null
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(50),
@@ -296,54 +295,40 @@ class _CadastroPageState extends State<CadastroPage> {
                         height: 100,
                         child: Icon(
                           Icons.camera_alt,
-                          color: Colors.grey[800],
+                          color: const Color.fromRGBO(255, 63, 84, 1),
                         ),
                       ),
               ),
             ),
-            /*ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(255, 63, 84, 1),
-                padding: const EdgeInsets.all(13),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-              ),
-              child: const Text('Upload'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ImageUploads()),
-                );
-              },
-            ),*/
             const Padding(padding: EdgeInsets.all(12)),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(255, 63, 84, 1),
-                padding: const EdgeInsets.all(13),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-              ),
-              child: const Text('Confirmar localização'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MapScreen2(
-                          description: descriptionController.text,
-                          image: image,
-                          date: date,
-                          criticality: criticality,
-                          status: 'open')),
-                );
-              },
-            ),
-            const Padding(padding: EdgeInsets.all(8)),
           ],
         ),
       ),
+      bottomNavigationBar: Padding(
+          padding: EdgeInsets.all(8),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromRGBO(255, 63, 84, 1),
+              padding: const EdgeInsets.all(13),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+            ),
+            child: const Text('Confirmar localização'),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => MapScreen2(
+                        description: descriptionController.text,
+                        image: image,
+                        date: date,
+                        criticality: criticality,
+                        status: 'open')),
+              );
+            },
+          )),
+      backgroundColor: const Color.fromRGBO(36, 45, 57, 1),
     );
   }
 

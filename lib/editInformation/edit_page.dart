@@ -3,6 +3,8 @@ import 'package:degue_locator/map/mapScreen.dart';
 import 'package:degue_locator/model/location.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 class EditPage extends StatefulWidget {
   final LocationModel locationModel;
@@ -25,6 +27,9 @@ class _EditPageState extends State<EditPage> {
   bool _secondButton = false;
   bool _thirdButton = false;
 
+  bool _done = false;
+
+  String _statusText = 'Pendente';
   String url =
       'https://rafaturis.com.br/wp-content/uploads/2014/01/default-placeholder.png';
 
@@ -63,7 +68,7 @@ class _EditPageState extends State<EditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Editar ' + widget.locationModel.description),
+        title: Text(widget.locationModel.description),
         centerTitle: true,
         backgroundColor: const Color.fromRGBO(36, 45, 57, 1),
         elevation: 0,
@@ -77,39 +82,37 @@ class _EditPageState extends State<EditPage> {
         ),
         child: ListView(
           children: <Widget>[
-            const Padding(padding: EdgeInsets.all(8)),
-            TextFormField(
-              controller: descriptionController,
-              keyboardType: TextInputType.text,
-              decoration: const InputDecoration(
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+            Container(
+              alignment: Alignment.center,
+              child: Text(
+                "Criado em ${DateFormat.yMMMd().format(widget.locationModel.date.toDate())} por ${widget.locationModel.user}",
+                style: TextStyle(
+                  fontSize: 16,
+                  //fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                labelText: "Descrição",
-                labelStyle: TextStyle(
-                  color: Colors.white60,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white60,
               ),
             ),
-            Container(
-              height: 40,
-              alignment: Alignment.centerLeft,
-              child: const Text(
-                "Descreva um foco em poucas palavras",
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white60,
+            const Padding(padding: EdgeInsets.all(8)),
+            Center(
+              child: ListTile(
+                title: Text(
+                  _statusText,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
+                leading: Switch(
+                  value: _done,
+                  onChanged: (value) {
+                    setState(() {
+                      _done = value;
+                      _statusText = _done ? 'Resolvido' : 'Pendente';
+                    });
+                  },
+                  activeTrackColor: const Color.fromRGBO(255, 63, 84, 0.5),
+                  activeColor: const Color.fromRGBO(255, 63, 84, 1),
                 ),
               ),
             ),
@@ -126,6 +129,7 @@ class _EditPageState extends State<EditPage> {
                 ),
               ),
             ),
+            const Padding(padding: EdgeInsets.all(4)),
             Container(
               child: Row(
                 children: [
@@ -214,7 +218,7 @@ class _EditPageState extends State<EditPage> {
               height: 40,
               alignment: Alignment.centerLeft,
               child: const Text(
-                "Anexos:",
+                "Imagem:",
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -222,38 +226,69 @@ class _EditPageState extends State<EditPage> {
                 ),
               ),
             ),
+            const Padding(padding: EdgeInsets.all(4)),
             Container(
-                width: 100.00,
-                height: 100.00,
+                width: 250,
+                height: 250,
                 decoration: new BoxDecoration(
                   image: new DecorationImage(
                     image: NetworkImage(url),
                     fit: BoxFit.fitHeight,
                   ),
                 )),
-            const Padding(padding: EdgeInsets.all(8)),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(255, 63, 84, 1),
-                padding: const EdgeInsets.all(15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-              ),
-              child: const Text('Confirmar'),
-              onPressed: () {
-                updateDengueLocalization(widget.locationModel.uid);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MapScreen()),
-                );
-              },
-            ),
-            const Padding(padding: EdgeInsets.all(8)),
           ],
         ),
       ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.all(8),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromRGBO(255, 63, 84, 1),
+            padding: const EdgeInsets.all(15),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30.0),
+            ),
+          ),
+          child: const Text('Confirmar'),
+          onPressed: () {
+            if (_done) {
+              deleteDengueLocalization(widget.locationModel.uid);
+            } else {
+              updateDengueLocalization(widget.locationModel.uid);
+            }
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MapScreen()),
+            );
+          },
+        ),
+      ),
+      backgroundColor: const Color.fromRGBO(36, 45, 57, 1),
     );
+  }
+
+  deleteDengueLocalization(String? uid) async {
+    try {
+      var response = await FirebaseCrud.deleteLocalization(uid: uid);
+
+      if (response.cod != 200) {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Text(response.msg.toString()),
+              );
+            });
+      } else {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Text(response.msg.toString()),
+              );
+            });
+      }
+    } catch (e) {}
   }
 
   updateDengueLocalization(String? id) async {
@@ -262,7 +297,6 @@ class _EditPageState extends State<EditPage> {
           uid: id,
           description: descriptionController.text,
           criticality: criticality,
-          image: image,
           date: date,
           longitude: longitude,
           latitude: latitude,
